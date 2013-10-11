@@ -1,0 +1,9 @@
+with recursive path (name, path, parent, id, parentis) as 
+	(select name, '/', NULL, id, parentid from file where id=0
+	UNION	
+	select file.name, parentpath.path
+	|| CASE parentpath.path WHEN '/' THEN '' 
+	ELSE '/' END || 
+	file.name, parentpath.path, file.id, file.parentid from file, 
+	path as parentpath where file.parentid = parentpath.id) 
+select * from path;

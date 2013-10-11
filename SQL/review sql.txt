@@ -1,0 +1,114 @@
+1) Find the company with most employees.
+2) Find employees who make more than the average salary within their company.
+3) Find employees who make more than the median salary within their company.
+4) Find employees whose salary is an outlier (above 2 standard deviations) within their comapny.
+5) Find employees whose salary is an outlier (above 95th percentile) within their comapny.
+6) Find the company with the highest number of outlying salaries (your choice which outlier to use).
+7) Find the company with most non-managing employees.
+8) Find the company with highest average difference between manager salary and non-manager employee salary.
+9) Assume that each non-managing employee genererates around 2x their salary in revenue. Managing employees don't directly contribute to revenue. Estimate revenue and ``profit'' for each company (assume profit = revenue - all_salaries).
+10) Calculate salary skew for profitable (profit > 0) companies from question 9.
+
+1.
+select cname, count(*) as Empcount
+from works
+group by cname
+order by Empcount desc
+limit 1
+
+2.
+select employeename
+from works as w1,
+(select avg(salary) as avgsal, companyname
+from works
+group by companyname) as w2
+where w1.companyname = w2.companyname AND w1.salary > w2.avgsal
+
+3.
+select employeename
+from works as w1,
+(select median(salary) as medsal, companyname
+from works
+group by companyname) as w2
+where w1.companyname = w2.companyname AND w1.salary > w2.medsal
+
+4.
+select employeename
+from works as w1,
+(select stddev(salary) as stddevi, companyname, AVG(SALARY) as meansal
+from works
+group by companyname) as w2
+where w1.companyname = w2.companyname AND w1.salary > (2*w2.stddevi+w2.meansal)
+
+5.
+select ename
+from 
+(select cname, stddev(salary) st, avg(salary) avgsal
+from works
+group by cname) t1,
+(select ename, salary
+from works) t2
+where t2.salary>(1.96*t1.st+t1.avgsal);
+
+
+6.
+select cname, count(*)
+from 
+(select cname, stddev(salary) st, avg(salary) avgsal
+from works
+group by cname) t1,
+(select ename, salary
+from works) t2
+where t2.salary>(1.96*t1.st+t1.avgsal)
+group by cname;
+
+
+7.  
+select cname, count(*) 
+from works,
+(select ename from manages where ename not in 
+(select mname from manages)) w2
+where works.ename = w2.ename
+group by cname
+order by count(*) desc
+limit 1;
+
+8.
+create view allview as
+select t1.ename, t1.cname, t1.salary, case when t2.mname is null then 'M' else 'E' end as status
+from works t1 left outer join manages t2 on (t1.ename = t2.ename);
+
+select t1.cname, max(t1.avgm-t2.avge) diff
+from
+(select cname, avg(salary) avgm
+from allview
+where status='M'
+group by cname) t1,
+(select cname, avg(salary) avge
+from allview
+where status='E'
+group by cname) t2
+group by t1.cname
+order by diff desc
+limit 1;
+
+9.
+create view allview as
+select t1.ename, t1.cname, t1.salary, case when t2.mname is null then 'M' else 'E' end as status
+from works t1 left outer join manages t2 on (t1.ename = t2.ename);
+
+
+select cname,avg(case when status='M' then salary else null end)
+- avg(case when status='E' then salary else null end) diff
+from allview
+group by cname
+order by 2 desc
+limit 1;
+
+10.
+select distinct cname, top/bottom skew from (select cname, sum(dev3) over (partition by cname) top, sum(emp3) over (partition by cname) bottom 
+from (select ename, cname, (deviations*deviations*deviations) dev3, (emp*emp*emp) emp3 
+from (select ename, cname, (salary-mean) deviations, (empcount-1) emp 
+from (select ename, cname, salary, avg(salary) over (partition by cname) mean, 
+stddev(salary) over (partition by cname) std1, count(cname) over (partition by cname) empcount 
+from works)t1)t2)t3)t4;

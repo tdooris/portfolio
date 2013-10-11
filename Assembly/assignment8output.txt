@@ -1,0 +1,16 @@
+Enter number: 100
+Enter number: 101
+Rejected.
+Enter number: -100
+Enter number: -101
+Rejected.
+Enter number: -5
+Enter number: -4
+Enter number: -3
+Enter number: 1
+Enter number: 2
+Enter number: 3
+Enter number: 0
+The number of positive numbers:           4
+The number of negative numbers:           4
+The sum of the positive numbers:         106
