@@ -1,4 +1,6 @@
-//
+/* I just threw this C++ console application together one night as a challenge 
+ to think it through
+ */
 //  main.cpp
 //  TICTAC
 //  C++ console application

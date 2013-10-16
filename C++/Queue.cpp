@@ -1,5 +1,10 @@
 //106 main.cc
 //hw2c (2b changed to 100 checkoutlines)
+
+/*This program simulates a supermarket queue.  Customers arrive and then are processed first come first serve.  It outputs the time or arrival and time of departure.
+ 
+ 
+ */
 #include <iostream>
 #include <queue>
 #include <cassert>
@@ -28,7 +33,7 @@ private:
 class Multicheckout{
 public:
 Multicheckout():next_departure_line_(0){}
-enum{NUMLINES=100};
+enum{NUMLINES=3};
 void arrive(Customer);
 void depart();
 bool empty() const;
@@ -75,7 +80,7 @@ void Checkout::depart()
     static int departid=0;
     assert(!empty());
     Customer c = q_.front();
-    cout<<"D "<<++departid<<" "<<departure_time_<<" "<<departure_time_-c.arrival<<endl;//NEED TO ADD MINUTES IN CHECKOUT...
+    cout<<"D "<<++departid<<" "<<departure_time_<<" "<<departure_time_-c.arrival<<endl;
     q_.pop();
 
     if(!q_.empty())

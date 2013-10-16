@@ -1,3 +1,7 @@
+/*  This program simulates a bank.  It includes functions such as withdrawal, deposit, create a new account, close an account, print balance, and more.
+ 
+ */
+
 #include <iostream>
 #include <fstream>
 #include <string>

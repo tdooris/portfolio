@@ -3,7 +3,7 @@
 
 /*This is a basic catalog of books, storing the book's title, author(s),
  publisher, ISBN, price, and number of copies in stock.  These are stored as private 
- variables in theclass Booktype.
+ variables in the Book class.
  There area number of public functions to do things like print the title,
  check the number of copies in stock, change the number of copies in stock, etc.
  
@@ -25,7 +25,7 @@ string author3;
 string author4;
 };
 
-class Booktype{
+class Book{
 public:
 void print_title() const;
 void set_title(string);
@@ -71,7 +71,7 @@ double amtspent;
 int main()
 {
 
-Booktype library[100];
+Book library[100];
 
 library[0].set_title("Alice In Wonderland");
 library[0].set_copies(25);
@@ -102,45 +102,45 @@ customer[1].print_booksbought();
 
 }
 
-void Booktype::print_title() const
+void Book::print_title() const
 {
     cout<<title<<endl;
 }
-void Booktype::set_title(string s)
+void Book::set_title(string s)
 {
     title = s;
 }
-bool Booktype::same_title(string s)
+bool Book::same_title(string s)
 {
     if(s == title)
     return true;
     return false;
 }
-int Booktype::copies_in_stock() const
+int Book::copies_in_stock() const
 {
     return copies;
 }
-void Booktype::set_copies(int x)
+void Book::set_copies(int x)
 {
     copies = x;
 }
-void Booktype::update_copies(int x)
+void Book::update_copies(int x)
 {
     copies +=x;
 }
-void Booktype::set_publisher(string s)
+void Book::set_publisher(string s)
 {
     publisher = s;
 }
-void Booktype::set_ISBN(string s)
+void Book::set_ISBN(string s)
 {
     ISBN = s;
 }
-void Booktype::set_price(double x)
+void Book::set_price(double x)
 {
     price = x;
 }
-void Booktype::list_authors() const
+void Book::list_authors() const
 {
         if(authorlist.author1!=0)
         cout<<authorlist.author1;
